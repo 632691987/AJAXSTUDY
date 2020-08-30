@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #result {
+            width: 200px;
+            height: 200px;
+            border: 1px red solid;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="btn">Click and send</button>
+    <button id="noCacheBtn">No Cache Button</button>
+    <div id='result'></div>
+</body>
+<script>
+    document.getElementById('noCacheBtn').onclick = function(e) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://127.0.0.1:22546/cache?t=' + new Date()); // 保证 IE 不会判断是 cache
+        xhr.timeout = 2000; //超时为2 秒
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    console.log(xhr.status); // 响应码 200
+                    console.log(xhr.statusText); //响应字符串 OK
+                    console.log(xhr.getAllResponseHeaders());
+                    console.log(xhr.response); //响应体
+
+                    document.getElementById('result').innerHTML = xhr.response;
+                } else {
+
+                }
+            }
+        }
+        xhr.ontimeout = function() {
+            console.log('请求超过时间');
+        }
+
+        xhr.onerror = function() {
+            console.log('网络异常');
+        }
+    };
+
+    document.getElementById('btn').onclick = function(e) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://127.0.0.1:22546/server?a=100&b=200&c=300');
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    console.log(xhr.status); // 响应码 200
+                    console.log(xhr.statusText); //响应字符串 OK
+                    console.log(xhr.getAllResponseHeaders());
+                    console.log(xhr.response); //响应体
+
+                    document.getElementById('result').innerHTML = xhr.response;
+                } else {
+
+                }
+            }
+        }
+    };
+
+    document.getElementById('result').onmouseover = function(e) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://127.0.0.1:22546/server');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('key1', 'value1');
+
+        xhr.send('a=100&b=200&c=400');
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    console.log(xhr.status); // 响应码 200
+                    console.log(xhr.statusText); //响应字符串 OK
+                    console.log(xhr.getAllResponseHeaders());
+                    console.log(xhr.response); //响应体
+
+                    document.getElementById('result').innerHTML = xhr.response;
+                } else {
+
+                }
+            }
+        }
+    };
+
+    window.onkeydown = function() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://127.0.0.1:22546/json-server');
+        xhr.responseType = 'json' // 注意设置了这个，所以不需要额外的 JSON.parse
+        xhr.send();
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    //let data = JSON.parse(xhr.response);
+                    document.getElementById('result').innerHTML = xhr.response.name;
+                } else {
+
+                }
+            }
+        }
+    };
+</script>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #result {
+            width: 200px;
+            height: 200px;
+            border: 1px red solid;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="sendBtn">Send</button>
+    <button id="cancelBtn">Cancel</button>
+    <div id='result'></div>
+</body>
+<script>
+    let xhr = null;
+    let isSending = false;
+
+    document.getElementById('sendBtn').onclick = function(e) {
+        if (isSending && xhr !== undefined && xhr !== null && xhr instanceof XMLHttpRequest) {
+            xhr.abort();
+        }
+        xhr = new XMLHttpRequest();
+        // Update status
+        isSending = true;
+
+        xhr.open('GET', 'http://127.0.0.1:22546/delay');
+        xhr.send();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    document.getElementById('result').innerHTML = xhr.response;
+                }
+                isSending = false;
+            }
+
+        }
+    };
+
+    document.getElementById('cancelBtn').onclick = function(e) {
+        if (xhr !== undefined && xhr !== null && xhr instanceof XMLHttpRequest) {
+            xhr.abort();
+            console.log('Request abort');
+        }
+    };
+</script>
+
+</html>
